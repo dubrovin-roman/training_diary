@@ -48,6 +48,21 @@ if (navigator.geolocation) {
           },
         });
         myMap.geoObjects.add(myPosition);
+        myMap.events.add("click", (mapEvent) => {
+          const coords = mapEvent.get("coords");
+          const tempBalloon = new ymaps.Placemark(
+            coords,
+            {
+              iconContent: "Тренировка № 1",
+              balloonContentHeader: "Тренировка № 1",
+              balloonContentBody: "Содержимое тренировки",
+            },
+            {
+              preset: "islands#darkGreenStretchyIcon",
+            }
+          );
+          myMap.geoObjects.add(tempBalloon);
+        });
       }
     },
     function () {
