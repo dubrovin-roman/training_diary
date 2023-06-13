@@ -1,5 +1,7 @@
 "use strict";
 
+import { Running, Cycling } from "./workout.js";
+
 const months = [
   "January",
   "February",
