@@ -2,21 +2,6 @@
 
 import { Running, Cycling } from "./workout.js";
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const form = document.querySelector(".form");
 const containerWorkouts = document.querySelector(".workouts");
 const inputType = document.querySelector(".form__input--type");
@@ -66,6 +51,11 @@ class TrainingDiaryApp {
   }
 
   _hiddenForm() {
+    inputDistance.value =
+      inputDuration.value =
+      inputCadence.value =
+      inputElevation.value =
+        "";
     form.classList.add("hidden");
   }
 
@@ -109,13 +99,8 @@ class TrainingDiaryApp {
     this._workouts.push(workout);
     //отрисовка тренировки на карте
     this._renderingWorkoutOnMap(workout);
-
-    inputDistance.value =
-      inputDuration.value =
-      inputCadence.value =
-      inputElevation.value =
-        "";
-
+    //отрисовка тренеровки на sidebar
+    this._renderingWorkoutOnSidebar(workout);
     //скрываем форму ввода
     this._hiddenForm();
   }
@@ -124,15 +109,62 @@ class TrainingDiaryApp {
     const tempBalloon = new ymaps.Placemark(
       workout.coord,
       {
-        iconContent: "Тренировка № 1",
-        balloonContentHeader: "Тренировка № 1",
-        balloonContentBody: "Содержимое тренировки",
+        iconContent: `${
+          workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
+        } ${workout.description}`,
+        balloonContentHeader: `${
+          workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
+        } ${workout.description}`,
+        balloonContentBody: workout.contentBody,
       },
       {
         preset: "islands#darkGreenStretchyIcon",
       }
     );
     this._myMap.geoObjects.add(tempBalloon);
+  }
+
+  _renderingWorkoutOnSidebar(workout) {
+    const html = `<li class="workout workout--${workout.type}" data-id="${
+      workout.id
+    }">
+    <h2 class="workout__title">${workout.description}</h2>
+    <div class="workout__details">
+      <span class="workout__icon">${
+        workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
+      }</span>
+      <span class="workout__value">${workout.distance}</span>
+      <span class="workout__unit">км</span>
+    </div>
+    <div class="workout__details">
+      <span class="workout__icon">⏱</span>
+      <span class="workout__value">${workout.duration}</span>
+      <span class="workout__unit">мин</span>
+    </div>
+    <div class="workout__details">
+      <span class="workout__icon">⚡️</span>
+      <span class="workout__value">${
+        workout.type === "running"
+          ? workout.pace.toFixed(1)
+          : workout.speed.toFixed(1)
+      }</span>
+      <span class="workout__unit">${
+        workout.type === "running" ? "мин/км" : "км/час"
+      }</span>
+    </div>
+    <div class="workout__details">
+      <span class="workout__icon">${
+        workout.type === "running" ? "🦶🏼" : "⛰"
+      }</span>
+      <span class="workout__value">${
+        workout.type === "running" ? workout.cadence : workout.elevation
+      }</span>
+      <span class="workout__unit">${
+        workout.type === "running" ? "шаг" : "м"
+      }</span>
+    </div>
+  </li>`;
+    form.insertAdjacentHTML("afterend", html);
   }
 
   _changingFormWhenSwitchingTypeOfTraining() {
