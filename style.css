@@ -230,6 +230,10 @@ a:visited {
   border-bottom: 5px solid var(--color-brand--2);
 }
 
+.container__reset-btn {
+  text-align: center;
+}
+
 .reset-btn {
   font-size: 3rem;
   padding: 0.5rem 2rem;
