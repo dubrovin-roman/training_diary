@@ -9,6 +9,7 @@ const inputDistance = document.querySelector(".form__input--distance");
 const inputDuration = document.querySelector(".form__input--duration");
 const inputCadence = document.querySelector(".form__input--cadence");
 const inputElevation = document.querySelector(".form__input--elevation");
+const btnReset = document.querySelector(".reset-btn");
 
 class TrainingDiaryApp {
   _workouts = [];
@@ -25,6 +26,7 @@ class TrainingDiaryApp {
       "click",
       this._movingToSelectedWorkout.bind(this)
     );
+    btnReset.addEventListener("click", this._reset);
   }
 
   initApp() {
@@ -45,6 +47,7 @@ class TrainingDiaryApp {
         zoom: 13,
       });
       this._myMap.events.add("click", this._showForm.bind(this));
+      this._getWorkoutsFromLocalStorage();
     }
   }
 
@@ -101,6 +104,8 @@ class TrainingDiaryApp {
     }
     //складываем все тренировки в один массив
     this._workouts.push(workout);
+    //сохранение тренировок в LocalStorage
+    this._saveWorkoutToLocalStorage();
     //отрисовка тренировки на карте
     this._renderingWorkoutOnMap(workout);
     //отрисовка тренеровки на sidebar
@@ -181,9 +186,28 @@ class TrainingDiaryApp {
     this._myMap.setCenter(workout.coord, 13, { duration: 800 });
   }
 
+  _saveWorkoutToLocalStorage() {
+    localStorage.setItem("workouts", JSON.stringify(this._workouts));
+  }
+
+  _getWorkoutsFromLocalStorage() {
+    const data = JSON.parse(localStorage.getItem("workouts"));
+    if (!data) return;
+    this._workouts = data;
+    this._workouts.forEach((workout) => {
+      this._renderingWorkoutOnMap(workout);
+      this._renderingWorkoutOnSidebar(workout);
+    });
+  }
+
   _changingFormWhenSwitchingTypeOfTraining() {
     inputCadence.closest(".form__row").classList.toggle("form__row--hidden");
     inputElevation.closest(".form__row").classList.toggle("form__row--hidden");
+  }
+
+  _reset() {
+    localStorage.removeItem("workouts");
+    location.reload();
   }
 }
 

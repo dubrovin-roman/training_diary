@@ -229,3 +229,10 @@ a:visited {
 .mark-popup .leaflet-popup-content-wrapper {
   border-bottom: 5px solid var(--color-brand--2);
 }
+
+.reset-btn {
+  font-size: 3rem;
+  padding: 0.5rem 2rem;
+  border-radius: 2rem;
+  cursor: pointer;
+}
