@@ -21,6 +21,10 @@ class TrainingDiaryApp {
       this._changingFormWhenSwitchingTypeOfTraining
     );
     form.addEventListener("submit", this._submittingForm.bind(this));
+    containerWorkouts.addEventListener(
+      "click",
+      this._movingToSelectedWorkout.bind(this)
+    );
   }
 
   initApp() {
@@ -109,12 +113,12 @@ class TrainingDiaryApp {
     const tempBalloon = new ymaps.Placemark(
       workout.coord,
       {
-        iconContent: `${
-          workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
-        } ${workout.description}`,
-        balloonContentHeader: `${
-          workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
-        } ${workout.description}`,
+        iconContent: `${workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"} ${
+          workout.description
+        }`,
+        balloonContentHeader: `${workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"} ${
+          workout.description
+        }`,
         balloonContentBody: workout.contentBody,
       },
       {
@@ -165,6 +169,16 @@ class TrainingDiaryApp {
     </div>
   </li>`;
     form.insertAdjacentHTML("afterend", html);
+  }
+
+  _movingToSelectedWorkout(ev) {
+    const workoutElement = ev.target.closest(".workout");
+    if (!workoutElement) return;
+    const workout = this._workouts.find(
+      (value) => value.id == workoutElement.dataset.id
+    );
+
+    this._myMap.setCenter(workout.coord, 13, { duration: 800 });
   }
 
   _changingFormWhenSwitchingTypeOfTraining() {
